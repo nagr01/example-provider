@@ -18,11 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
+
       - name: Install
         run: npm i
+
       - name: Test
         run: GIT_BRANCH=${GITHUB_REF:11} make test
 
@@ -32,7 +35,9 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v3
+
       - run: docker pull pactfoundation/pact-cli:latest
+
       - name: Can I deploy?
         run: GIT_BRANCH=${GITHUB_REF:11} make can_i_deploy
 
@@ -42,7 +47,9 @@ jobs:
     needs: can-i-deploy
     steps:
       - uses: actions/checkout@v3
+
       - run: docker pull pactfoundation/pact-cli:latest
+
       - name: Deploy
-        run: GIT_BRANCH=${GITHUB_REF:11} make deploy
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/test'
+        run: GIT_BRANCH=${GITHUB_REF:11} make deploy
